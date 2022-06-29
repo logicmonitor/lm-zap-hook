@@ -2,10 +2,8 @@ module github.com/logicmonitor/lm-zap-hook
 
 go 1.18
 
-replace github.com/logicmonitor/lm-data-sdk-go => /Users/avadhutpisal/repo/logicmonitor-github/lm-data-sdk-go
-
 require (
-	github.com/logicmonitor/lm-data-sdk-go v0.0.0
+	github.com/logicmonitor/lm-data-sdk-go v0.4.1
 	github.com/stretchr/testify v1.7.0
 	go.uber.org/zap v1.21.0
 )
