@@ -39,7 +39,7 @@ func WithLogLevel(level zapcore.Level) Option {
 	}
 }
 
-// WithAsync allows to send the log send requests in async manner.
+// WithAsync allows to send the log requests in async manner.
 // Note: It does not take any effect when batching is enabled
 func WithAsync() Option {
 	return func(lmCore *lmCore) error {

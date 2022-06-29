@@ -63,15 +63,15 @@ func main() {
 ```
 ### Options
 
-Following are the options that can be passed to `NewLMCore()` to configure the `lmCore`:
+Following are the options that can be passed to `NewLMCore()` to configure the `lmCore`.
 
 | Option                                     |   Description                                                                    |             
 |--------------------------------------------|----------------------------------------------------------------------------------|
-|   WithLogLevel(logLevel)                   | Configures `lmCore` to send the logs having level equal or above the level specified by `logLevel`. Default logLevel is `Warning`. |
-|   WithClientBatchingEnabled(batchInterval) | Enables batching of the log messages for the interval specified by `batchInterval`. |
-|   WithMetadata(metadata)                   | Metadata to be sent with the every log message.                                    |
+|   WithLogLevel(`logLevel zapcore.Level`)                   | Configures `lmCore` to send the logs having level equal or above the level specified by `logLevel`. Default logLevel is `Warning`. |
+|   WithClientBatchingEnabled(`batchInterval time.Duration`) | Enables batching of the log messages for the interval specified by `batchInterval`. By default, batching is disabled. |
+|   WithMetadata(`metadata map[string]string`)                   | Metadata to be sent with the every log message.                                    |
 |   WithNopLogIngesterClient()               | Configures `lmCore` to use the nopLogIngesterClient which discards the log messages. It can be used for testing.                          |
-
+|   WithAsync()      | It makes the call to the send log operation non-blocking. Default value of Async Mode is `false`. |
 ---
 
 Copyright, 2022, LogicMonitor, Inc.
