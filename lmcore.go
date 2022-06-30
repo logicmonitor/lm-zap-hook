@@ -122,8 +122,9 @@ func addMetadata(metadataTags map[string]string, entry zapcore.Entry) {
 		if entry.LoggerName != "" {
 			metadataTags["logger"] = entry.LoggerName
 		}
-		if entry.Caller.TrimmedPath() != "" {
-			metadataTags["caller"] = entry.Caller.TrimmedPath()
+		trimmedCallerPath := entry.Caller.TrimmedPath()
+		if trimmedCallerPath != "" {
+			metadataTags["caller"] = trimmedCallerPath
 		}
 	}
 }
