@@ -25,20 +25,20 @@ func TestNewLogIngesterClient(t *testing.T) {
 
 func TestLogIngesterWrite(t *testing.T) {
 	logIngesterClient := newNopLogIngesterClient()
-	logIngester := LogIngester{
+	logNotifier := LogNotifier{
 		logIngesterSetting: &LogIngesterSetting{
 			resourceMapperTags: map[string]string{"system.displayname": "test-device"},
 		},
 		LogIngesterClient: logIngesterClient,
 	}
 	logMessage := "test"
-	err := logIngester.Write([]byte(logMessage), map[string]string{"env": "dev"})
+	err := logNotifier.Notify([]byte(logMessage), map[string]string{"env": "dev"})
 	assert.NoError(t, err)
 }
 
 func TestLogIngesterWriteAsync(t *testing.T) {
 	logIngesterClient := newNopLogIngesterClient()
-	logIngester := LogIngester{
+	logNotifier := LogNotifier{
 		logIngesterSetting: &LogIngesterSetting{
 			resourceMapperTags: map[string]string{"system.displayname": "test-device"},
 		},
@@ -46,6 +46,6 @@ func TestLogIngesterWriteAsync(t *testing.T) {
 		LogIngesterClient: logIngesterClient,
 	}
 	logMessage := "test"
-	err := logIngester.Write([]byte(logMessage), map[string]string{"env": "dev"})
+	err := logNotifier.Notify([]byte(logMessage), map[string]string{"env": "dev"})
 	assert.NoError(t, err)
 }

@@ -15,9 +15,9 @@ func TestNewLMCore(t *testing.T) {
 	resourceTags := map[string]string{"system.displayname": "test-device"}
 	lmCore, err := NewLMCore(context.Background(), Params{ResourceMapperTags: resourceTags}, WithNopLogIngesterClient())
 	assert.NoError(t, err)
-	assert.Equal(t, resourceTags, lmCore.logIngester.logIngesterSetting.resourceMapperTags)
-	assert.Equal(t, false, lmCore.logIngester.logIngesterSetting.clientBatchingEnabled)
-	assert.Equal(t, false, lmCore.logIngester.async)
+	assert.Equal(t, resourceTags, lmCore.logNotifier.logIngesterSetting.resourceMapperTags)
+	assert.Equal(t, false, lmCore.logNotifier.logIngesterSetting.clientBatchingEnabled)
+	assert.Equal(t, true, lmCore.logNotifier.async)
 }
 
 func TestLMWithOptions(t *testing.T) {
@@ -31,11 +31,11 @@ func TestLMWithOptions(t *testing.T) {
 		WithNopLogIngesterClient(),
 	)
 	assert.NoError(t, err)
-	assert.Equal(t, resourceTags, lmCore.logIngester.logIngesterSetting.resourceMapperTags)
+	assert.Equal(t, resourceTags, lmCore.logNotifier.logIngesterSetting.resourceMapperTags)
 	assert.Equal(t, metadataTags, lmCore.metadata)
-	assert.Equal(t, true, lmCore.logIngester.logIngesterSetting.clientBatchingEnabled)
-	assert.Equal(t, 1*time.Minute, lmCore.logIngester.logIngesterSetting.clientBatchingInterval)
-	assert.Equal(t, false, lmCore.logIngester.async)
+	assert.Equal(t, true, lmCore.logNotifier.logIngesterSetting.clientBatchingEnabled)
+	assert.Equal(t, 1*time.Minute, lmCore.logNotifier.logIngesterSetting.clientBatchingInterval)
+	assert.Equal(t, true, lmCore.logNotifier.async)
 }
 
 func TestNewLMCoreWithError(t *testing.T) {
@@ -97,7 +97,7 @@ func TestWrite(t *testing.T) {
 	assert.NoError(t, lmCore.Write(entry, fields))
 }
 
-func TestWriteWithAsync(t *testing.T) {
+func TestWriteWithAsyncDisabled(t *testing.T) {
 	entry := zapcore.Entry{
 		Message:    "test",
 		Level:      zapcore.InfoLevel,
@@ -108,7 +108,7 @@ func TestWriteWithAsync(t *testing.T) {
 	fields := []zapcore.Field{makeInt64Field("k", 42)}
 	resourceTags := map[string]string{"system.displayname": "test-device"}
 	metadataTags := map[string]string{"env": "staging"}
-	lmCore, _ := NewLMCore(context.Background(), Params{ResourceMapperTags: resourceTags}, WithLogLevel(zapcore.InfoLevel), WithAsync(), WithMetadata(metadataTags), WithNopLogIngesterClient())
+	lmCore, _ := NewLMCore(context.Background(), Params{ResourceMapperTags: resourceTags}, WithLogLevel(zapcore.InfoLevel), WithBlocking(), WithMetadata(metadataTags), WithNopLogIngesterClient())
 	assert.NoError(t, lmCore.Write(entry, fields))
 }
 

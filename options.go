@@ -16,8 +16,8 @@ type AuthProvider interface {
 // WithClientBatchingEnabled enables the client side batching and configures the batching interval
 func WithClientBatchingEnabled(batchingInterval time.Duration) Option {
 	return func(lmCore *lmCore) error {
-		lmCore.logIngester.logIngesterSetting.clientBatchingEnabled = true
-		lmCore.logIngester.logIngesterSetting.clientBatchingInterval = batchingInterval
+		lmCore.logNotifier.logIngesterSetting.clientBatchingEnabled = true
+		lmCore.logNotifier.logIngesterSetting.clientBatchingInterval = batchingInterval
 		return nil
 	}
 }
@@ -39,11 +39,10 @@ func WithLogLevel(level zapcore.Level) Option {
 	}
 }
 
-// WithAsync allows to send the log requests in async manner.
-// Note: It does not take any effect when batching is enabled
-func WithAsync() Option {
+// WithBlocking blocks for the calls to the send log operation
+func WithBlocking() Option {
 	return func(lmCore *lmCore) error {
-		lmCore.logIngester.async = true
+		lmCore.logNotifier.async = false
 		return nil
 	}
 }
@@ -51,7 +50,7 @@ func WithAsync() Option {
 // WithAuthProvider is used by the lmotel collector for passing the auth provider
 func WithAuthProvider(authProvider AuthProvider) Option {
 	return func(lmCore *lmCore) error {
-		lmCore.logIngester.logIngesterSetting.authProvider = authProvider
+		lmCore.logNotifier.logIngesterSetting.authProvider = authProvider
 		return nil
 	}
 }
@@ -59,7 +58,7 @@ func WithAuthProvider(authProvider AuthProvider) Option {
 // WithNopLogIngesterClient will use no-op log ingester which will not send any logs. Can be used for testing
 func WithNopLogIngesterClient() Option {
 	return func(lmCore *lmCore) error {
-		lmCore.logIngester.LogIngesterClient = newNopLogIngesterClient()
+		lmCore.logNotifier.LogIngesterClient = newNopLogIngesterClient()
 		return nil
 	}
 }

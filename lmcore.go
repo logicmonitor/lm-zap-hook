@@ -12,7 +12,7 @@ const (
 	// Default log level to be used for getting the log levels to be considered for reporting the logs
 	defaultLogLevel = zapcore.WarnLevel
 	// Default value to decide if log send operation to be performed in async mode
-	defaultAsync = false
+	defaultAsync = true
 )
 
 // Params holds the required configurations for the hook
@@ -22,13 +22,13 @@ type Params struct {
 }
 
 type lmCore struct {
-	logIngester LogIngester
+	logNotifier LogNotifier
 	zapcore.LevelEnabler
 	enc      zapcore.Encoder
 	metadata map[string]string
 }
 
-// NewCore creates a zap core that sends out the logs using logIngester
+// NewCore creates a zap core that sends out the logs using logNotifer
 func NewLMCore(ctx context.Context, params Params, opts ...Option) (*lmCore, error) {
 	var err error
 
@@ -42,7 +42,7 @@ func NewLMCore(ctx context.Context, params Params, opts ...Option) (*lmCore, err
 
 	// create core config
 	lmCore := &lmCore{
-		logIngester: LogIngester{
+		logNotifier: LogNotifier{
 			logIngesterSetting: &LogIngesterSetting{
 				resourceMapperTags: params.ResourceMapperTags,
 			},
@@ -59,8 +59,8 @@ func NewLMCore(ctx context.Context, params Params, opts ...Option) (*lmCore, err
 		}
 	}
 
-	if lmCore.logIngester.LogIngesterClient == nil {
-		lmCore.logIngester.LogIngesterClient, err = newLogIngesterClient(ctx, *lmCore.logIngester.logIngesterSetting)
+	if lmCore.logNotifier.LogIngesterClient == nil {
+		lmCore.logNotifier.LogIngesterClient, err = newLogIngesterClient(ctx, *lmCore.logNotifier.logIngesterSetting)
 		if err != nil {
 			return nil, err
 		}
@@ -82,7 +82,7 @@ func (c *lmCore) Write(entry zapcore.Entry, fs []zapcore.Field) error {
 		return err
 	}
 	addMetadata(clone.metadata, entry)
-	err = c.logIngester.Write(buf.Bytes(), clone.metadata)
+	err = c.logNotifier.Notify(buf.Bytes(), clone.metadata)
 	buf.Free()
 	if err != nil {
 		return err
@@ -118,9 +118,13 @@ func (c *lmCore) with(fs []zapcore.Field) *lmCore {
 func addMetadata(metadataTags map[string]string, entry zapcore.Entry) {
 	if metadataTags != nil {
 		metadataTags["level"] = entry.Level.String()
-		metadataTags["logger"] = entry.LoggerName
-		metadataTags["caller"] = entry.Caller.String()
 		metadataTags["function"] = entry.Caller.Function
+		if entry.LoggerName != "" {
+			metadataTags["logger"] = entry.LoggerName
+		}
+		if entry.Caller.TrimmedPath() != "" {
+			metadataTags["caller"] = entry.Caller.TrimmedPath()
+		}
 	}
 }
 
@@ -130,7 +134,7 @@ func (c *lmCore) clone() *lmCore {
 		metadata[key] = value
 	}
 	return &lmCore{
-		logIngester:  c.logIngester,
+		logNotifier:  c.logNotifier,
 		LevelEnabler: c.LevelEnabler,
 		enc:          c.enc.Clone(),
 		metadata:     metadata,
