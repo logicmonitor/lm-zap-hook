@@ -52,7 +52,7 @@ func (nopIngesterClient nopLogIngesterClient) SendLogs(ctx context.Context, logM
 	return nil
 }
 
-func (logNotifier *LogNotifier) Notify(data []byte, metadata map[string]string) error {
+func (logNotifier *LogNotifier) Notify(ctx context.Context, data []byte, metadata map[string]string) error {
 	var err error
 	// Sending logs in async mode will make sense only if the batching is disabled
 	if !logNotifier.logIngesterSetting.clientBatchingEnabled && logNotifier.async {

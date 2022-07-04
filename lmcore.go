@@ -82,7 +82,7 @@ func (c *lmCore) Write(entry zapcore.Entry, fs []zapcore.Field) error {
 		return err
 	}
 	addMetadata(clone.metadata, entry)
-	err = c.logNotifier.Notify(buf.Bytes(), clone.metadata)
+	err = c.logNotifier.Notify(context.Background(), buf.Bytes(), clone.metadata)
 	buf.Free()
 	if err != nil {
 		return err

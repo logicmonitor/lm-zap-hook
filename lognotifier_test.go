@@ -32,7 +32,7 @@ func TestLogIngesterWrite(t *testing.T) {
 		LogIngesterClient: logIngesterClient,
 	}
 	logMessage := "test"
-	err := logNotifier.Notify([]byte(logMessage), map[string]string{"env": "dev"})
+	err := logNotifier.Notify(context.Background(), []byte(logMessage), map[string]string{"env": "dev"})
 	assert.NoError(t, err)
 }
 
@@ -46,6 +46,6 @@ func TestLogIngesterWriteAsync(t *testing.T) {
 		LogIngesterClient: logIngesterClient,
 	}
 	logMessage := "test"
-	err := logNotifier.Notify([]byte(logMessage), map[string]string{"env": "dev"})
+	err := logNotifier.Notify(context.Background(), []byte(logMessage), map[string]string{"env": "dev"})
 	assert.NoError(t, err)
 }
