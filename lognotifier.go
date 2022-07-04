@@ -57,12 +57,12 @@ func (logNotifier *LogNotifier) Notify(ctx context.Context, data []byte, metadat
 	// Sending logs in async mode will make sense only if the batching is disabled
 	if !logNotifier.logIngesterSetting.clientBatchingEnabled && logNotifier.async {
 		go func() {
-			_ = logNotifier.LogIngesterClient.SendLogs(context.Background(), string(data), logNotifier.logIngesterSetting.resourceMapperTags, metadata)
+			_ = logNotifier.LogIngesterClient.SendLogs(ctx, string(data), logNotifier.logIngesterSetting.resourceMapperTags, metadata)
 		}()
 		return nil
 	}
 	// Sending logs in synchronus mode
-	err = logNotifier.LogIngesterClient.SendLogs(context.Background(), string(data), logNotifier.logIngesterSetting.resourceMapperTags, metadata)
+	err = logNotifier.LogIngesterClient.SendLogs(ctx, string(data), logNotifier.logIngesterSetting.resourceMapperTags, metadata)
 	if err != nil {
 		return err
 	}
