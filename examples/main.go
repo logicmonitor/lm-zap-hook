@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"time"
 
 	lmzaphook "github.com/logicmonitor/lm-zap-hook"
 	"go.uber.org/zap"
@@ -35,4 +36,7 @@ func main() {
 
 	// This warning will go to both the main logger and to Logicmonitor.
 	logger.Warn("Warning message with fields", zap.String("foo", "bar"))
+
+	// By default, log send operations happens async way, so blocking the execution
+	time.Sleep(3 * time.Second)
 }
