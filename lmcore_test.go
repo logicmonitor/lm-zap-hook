@@ -16,7 +16,7 @@ func TestNewLMCore(t *testing.T) {
 	lmCore, err := NewLMCore(context.Background(), Params{ResourceMapperTags: resourceTags}, WithNopLogIngesterClient())
 	assert.NoError(t, err)
 	assert.Equal(t, resourceTags, lmCore.logNotifier.logIngesterSetting.resourceMapperTags)
-	assert.Equal(t, false, lmCore.logNotifier.logIngesterSetting.clientBatchingEnabled)
+	assert.Equal(t, true, lmCore.logNotifier.logIngesterSetting.clientBatchingEnabled)
 	assert.Equal(t, true, lmCore.logNotifier.async)
 }
 
@@ -26,7 +26,7 @@ func TestLMWithOptions(t *testing.T) {
 
 	lmCore, err := NewLMCore(context.Background(), Params{ResourceMapperTags: resourceTags},
 		WithLogLevel(zapcore.InfoLevel),
-		WithClientBatchingEnabled(1*time.Minute),
+		WithClientBatchingInterval(1*time.Minute),
 		WithMetadata(metadataTags),
 		WithNopLogIngesterClient(),
 	)
@@ -121,7 +121,7 @@ func BenchmarkLMCore(b *testing.B) {
 
 	lmCore, _ := NewLMCore(context.Background(), Params{ResourceMapperTags: resourceTags},
 		WithLogLevel(zapcore.InfoLevel),
-		WithClientBatchingEnabled(1*time.Minute),
+		WithClientBatchingInterval(1*time.Minute),
 		WithMetadata(metadataTags),
 		WithNopLogIngesterClient(),
 	)

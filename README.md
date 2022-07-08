@@ -26,6 +26,8 @@ package main
 
 import (
 	"context"
+	"time"
+
 	lmzaphook "github.com/logicmonitor/lm-zap-hook"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -42,7 +44,7 @@ func main() {
 	// create a new core that sends zapcore.InfoLevel and above messages to Logicmonitor Platform
 	lmCore, err := lmzaphook.NewLMCore(context.Background(),
 		lmzaphook.Params{ResourceMapperTags: resourceTags},
-		lmzaphook.WithLogLevel(zapcore.InfoLevel),
+		lmzaphook.WithLogLevel(zapcore.WarnLevel),
 	)
 	if err != nil {
 		logger.Fatal(err.Error())
@@ -54,13 +56,13 @@ func main() {
 	}))
 
 	// This message will only go to the main logger
-	logger.Debug("Test log message for main logger", zap.String("foo", "bar"))
+	logger.Info("Test log message for main logger", zap.String("foo", "bar"))
 
 	// This warning will go to both the main logger and to Logicmonitor.
 	logger.Warn("Warning message with fields", zap.String("foo", "bar"))
 
 	// By default, log send operations happens async way, so blocking the execution
-	time.Sleep(3 * time.Second)
+	time.Sleep(15 * time.Second)
 }
 
 ```
@@ -71,7 +73,8 @@ Following are the options that can be passed to `NewLMCore()` to configure the `
 | Option                                     |   Description                                                                    |             
 |--------------------------------------------|----------------------------------------------------------------------------------|
 |   WithLogLevel(`logLevel zapcore.Level`)                   | Configures `lmCore` to send the logs having level equal or above the level specified by `logLevel`. Default logLevel is `Warning`. |
-|   WithClientBatchingEnabled(`batchInterval time.Duration`) | Enables batching of the log messages for the interval specified by `batchInterval`. By default, batching is disabled. |
+|   WithClientBatchingInterval(`batchInterval time.Duration`) | Configures interval for batching of the log messages. |
+|   WithClientBatchingDisabled() | Disables the batching of log messages. By default, batching is enabled. |
 |   WithMetadata(`metadata map[string]string`)                   | Metadata to be sent with the every log message.                                    |
 |   WithNopLogIngesterClient()               | Configures `lmCore` to use the nopLogIngesterClient which discards the log messages. It can be used for testing.                          |
 |   WithBlocking()      | It makes the call to the send log operation blocking. Default value of Async Mode is `true`. |

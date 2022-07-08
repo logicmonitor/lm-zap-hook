@@ -13,11 +13,18 @@ type AuthProvider interface {
 	GetCredentials(method string, uri string, body []byte) string
 }
 
-// WithClientBatchingEnabled enables the client side batching and configures the batching interval
-func WithClientBatchingEnabled(batchingInterval time.Duration) Option {
+// WithClientBatchingInterval configures the batching interval
+func WithClientBatchingInterval(batchingInterval time.Duration) Option {
 	return func(lmCore *lmCore) error {
-		lmCore.logNotifier.logIngesterSetting.clientBatchingEnabled = true
 		lmCore.logNotifier.logIngesterSetting.clientBatchingInterval = batchingInterval
+		return nil
+	}
+}
+
+// WithClientBatchingDisabled disables the batching of logs
+func WithClientBatchingDisabled() Option {
+	return func(lmCore *lmCore) error {
+		lmCore.logNotifier.logIngesterSetting.clientBatchingEnabled = false
 		return nil
 	}
 }
@@ -31,7 +38,7 @@ func WithMetadata(metadataTags map[string]string) Option {
 }
 
 // WithLogLevel configures the log level such that only log messages with given level or above that level
-// will be sent
+// will be sent to the Logicmonitor platform
 func WithLogLevel(level zapcore.Level) Option {
 	return func(lmCore *lmCore) error {
 		lmCore.LevelEnabler = level

@@ -20,7 +20,7 @@ func main() {
 	// create a new core that sends zapcore.InfoLevel and above messages to Logicmonitor Platform
 	lmCore, err := lmzaphook.NewLMCore(context.Background(),
 		lmzaphook.Params{ResourceMapperTags: resourceTags},
-		lmzaphook.WithLogLevel(zapcore.InfoLevel),
+		lmzaphook.WithLogLevel(zapcore.WarnLevel),
 	)
 	if err != nil {
 		logger.Fatal(err.Error())
@@ -32,11 +32,11 @@ func main() {
 	}))
 
 	// This message will only go to the main logger
-	logger.Debug("Test log message for main logger", zap.String("foo", "bar"))
+	logger.Info("Test log message for main logger", zap.String("foo", "bar"))
 
 	// This warning will go to both the main logger and to Logicmonitor.
 	logger.Warn("Warning message with fields", zap.String("foo", "bar"))
 
 	// By default, log send operations happens async way, so blocking the execution
-	time.Sleep(3 * time.Second)
+	time.Sleep(15 * time.Second)
 }
