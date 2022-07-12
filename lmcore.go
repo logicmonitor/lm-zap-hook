@@ -3,6 +3,7 @@ package lmzaphook
 import (
 	"context"
 	"errors"
+	"time"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -13,6 +14,8 @@ const (
 	defaultLogLevel = zapcore.WarnLevel
 	// Default value to decide if log send operation to be performed in async mode
 	defaultAsync = true
+	// Default batching interval
+	defaultBatchingInterval = 10 * time.Second
 )
 
 // Params holds the required configurations for the hook
@@ -44,7 +47,9 @@ func NewLMCore(ctx context.Context, params Params, opts ...Option) (*lmCore, err
 	lmCore := &lmCore{
 		logNotifier: LogNotifier{
 			logIngesterSetting: &LogIngesterSetting{
-				resourceMapperTags: params.ResourceMapperTags,
+				resourceMapperTags:     params.ResourceMapperTags,
+				clientBatchingEnabled:  true,
+				clientBatchingInterval: defaultBatchingInterval,
 			},
 			async: defaultAsync,
 		},
@@ -90,7 +95,9 @@ func (c *lmCore) Write(entry zapcore.Entry, fs []zapcore.Field) error {
 	if entry.Level > zapcore.ErrorLevel {
 		// Since we may be crashing the program, sync the output.
 		// TODO: Proper implementation of sync is pending
-		c.Sync()
+		if err := c.Sync(); err != nil {
+			return err
+		}
 	}
 	return nil
 }
