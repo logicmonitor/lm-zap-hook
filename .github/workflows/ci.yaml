@@ -29,7 +29,7 @@ jobs:
     - uses: codecov/codecov-action@v2
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        files: coverage.txt
+        files: cover.out
         fail_ci_if_error: true # optional (default = false)
         verbose: true # optional (default = false)
 
@@ -66,7 +66,7 @@ jobs:
       uses: github/codeql-action/autobuild@v2
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v
+      uses: github/codeql-action/analyze@v2
     
     - name: Run Gosec Security Scanner
       uses: securego/gosec@master
