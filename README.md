@@ -1,7 +1,7 @@
 # lm-zap-hook
 
 [![codecov](https://codecov.io/gh/logicmonitor/lm-zap-hook/branch/main/graph/badge.svg?token=RVRA5LFQ7C)](https://codecov.io/gh/logicmonitor/lm-zap-hook)
-[![build_and_test](https://github.com/logicmonitor/lm-zap-hook/actions/workflows/ci.yml/badge.svg)](https://github.com/logicmonitor/lm-zap-hook/actions/workflows/ci.yml)
+[![build_and_test](https://github.com/logicmonitor/lm-zap-hook/actions/workflows/ci.yml/badge.svg)](https://github.com/logicmonitor/lm-zap-hook/actions/workflows/ci.yaml)
 [![Go Reference](https://pkg.go.dev/badge/github.com/logicmonitor/lm-zap-hook.svg)](https://pkg.go.dev/github.com/logicmonitor/lm-zap-hook)
 [![Go Report Card](https://goreportcard.com/badge/github.com/logicmonitor/lm-zap-hook)](https://goreportcard.com/report/github.com/logicmonitor/lm-zap-hook)
 
