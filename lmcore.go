@@ -95,7 +95,9 @@ func (c *lmCore) Write(entry zapcore.Entry, fs []zapcore.Field) error {
 	if entry.Level > zapcore.ErrorLevel {
 		// Since we may be crashing the program, sync the output.
 		// TODO: Proper implementation of sync is pending
-		c.Sync()
+		if err := c.Sync(); err != nil {
+			return err
+		}
 	}
 	return nil
 }

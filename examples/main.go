@@ -31,10 +31,10 @@ func main() {
 		return zapcore.NewTee(core, lmCore)
 	}))
 
-	// This message will only go to the main logger
+	// This info message will only go to the main logger
 	logger.Info("Test log message for main logger", zap.String("foo", "bar"))
 
-	// This warning will go to both the main logger and to Logicmonitor.
+	// This warning message will go to both the main logger and to Logicmonitor.
 	logger.Warn("Warning message with fields", zap.String("foo", "bar"))
 
 	// By default, log send operations happens async way, so blocking the execution
