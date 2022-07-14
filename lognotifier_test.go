@@ -23,6 +23,19 @@ func TestNewLogIngesterClient(t *testing.T) {
 	assert.NotEmpty(t, logIngesterClient)
 }
 
+func TestNewLogIngesterClientWithClientBatchingDisabled(t *testing.T) {
+	os.Setenv("LM_ACCOUNT", "localdev")
+	defer os.Unsetenv("LM_ACCOUNT")
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	logIngesterClient, err := newLogIngesterClient(ctx, LogIngesterSetting{
+		clientBatchingEnabled: false,
+		resourceMapperTags:    map[string]string{"system.displayname": "test-device"},
+	})
+	assert.NoError(t, err)
+	assert.NotEmpty(t, logIngesterClient)
+}
+
 func TestLogIngesterWrite(t *testing.T) {
 	logIngesterClient := newNopLogIngesterClient()
 	logNotifier := LogNotifier{

@@ -52,6 +52,7 @@ func TestCheck(t *testing.T) {
 		Time:       time.Now(),
 		LoggerName: "main",
 		Stack:      "fake-stack",
+		Caller:     zapcore.EntryCaller{},
 	}
 	ce := &zapcore.CheckedEntry{}
 	resourceTags := map[string]string{"system.displayname": "test-device"}
@@ -66,6 +67,7 @@ func TestCheckWithSkipLog(t *testing.T) {
 		Time:       time.Now(),
 		LoggerName: "main",
 		Stack:      "fake-stack",
+		Caller:     zapcore.EntryCaller{},
 	}
 	ce := &zapcore.CheckedEntry{}
 	resourceTags := map[string]string{"system.displayname": "test-device"}
@@ -89,6 +91,7 @@ func TestWrite(t *testing.T) {
 		Time:       time.Now(),
 		LoggerName: "main",
 		Stack:      "fake-stack",
+		Caller:     zapcore.EntryCaller{},
 	}
 	fields := []zapcore.Field{makeInt64Field("k", 42)}
 	resourceTags := map[string]string{"system.displayname": "test-device"}
@@ -104,6 +107,7 @@ func TestWriteWithAsyncDisabled(t *testing.T) {
 		Time:       time.Now(),
 		LoggerName: "main",
 		Stack:      "fake-stack",
+		Caller:     zapcore.EntryCaller{},
 	}
 	fields := []zapcore.Field{makeInt64Field("k", 42)}
 	resourceTags := map[string]string{"system.displayname": "test-device"}

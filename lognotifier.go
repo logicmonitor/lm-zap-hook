@@ -34,8 +34,14 @@ type LogIngesterSetting struct {
 // newLogIngesterClient returns the LM LogIngest client instance from the lm-data-sdk-go
 func newLogIngesterClient(ctx context.Context, logIngesterSetting LogIngesterSetting) (*logs.LMLogIngest, error) {
 	var opts []logs.Option
+	// if batching is enabled, then check for interval
 	if logIngesterSetting.clientBatchingEnabled {
-		opts = append(opts, logs.WithLogBatchingEnabled(logIngesterSetting.clientBatchingInterval))
+		if logIngesterSetting.clientBatchingInterval > 0 {
+			opts = append(opts, logs.WithLogBatchingInterval(logIngesterSetting.clientBatchingInterval))
+		}
+	} else {
+		// disable batching
+		opts = append(opts, logs.WithLogBatchingDisabled())
 	}
 	if logIngesterSetting.authProvider != nil {
 		opts = append(opts, logs.WithAuthentication(logIngesterSetting.authProvider))

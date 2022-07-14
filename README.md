@@ -46,7 +46,7 @@ func main() {
 	// create resource tags for mapping the log messages to a unique LogicMonitor resource
 	resourceTags := map[string]string{"system.displayname": "test-device"}
 
-	// create a new core that sends zapcore.InfoLevel and above messages to Logicmonitor Platform
+	// create a new core that sends zapcore.WarnLevel and above messages to Logicmonitor Platform
 	lmCore, err := lmzaphook.NewLMCore(context.Background(),
 		lmzaphook.Params{ResourceMapperTags: resourceTags},
 		lmzaphook.WithLogLevel(zapcore.WarnLevel),
